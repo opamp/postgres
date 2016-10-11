@@ -2,7 +2,7 @@
 #+AUTHOR: opamp_sando
 
 * Postgres  
-PostgreSQL 9.5.xのDockerイメージ。  
+PostgreSQL 9.6.xのDockerイメージ。  
 
 * Port
 PostgreSQLのデフォルトポート5432で起動します。Portsも自動で設定されないので
