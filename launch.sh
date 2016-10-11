@@ -2,7 +2,7 @@
 
 set INIT=0
 
-# MADIR IF $PGDATA DIR DOES NOT EXIST.
+# MKDIR IF $PGDATA DIR DOES NOT EXIST.
 if (!(-e $PGDATA)) then
     mkdir -p $PGDATA
     chmod 700 $PGDATA
