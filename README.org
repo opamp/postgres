@@ -1,30 +1,21 @@
-#+TITLE: Individual PostgreSQL dockerfile
+#+TITLE: opamp/postgres
 #+AUTHOR: opamp_sando
 
-* Postgres  
-PostgreSQL 9.6.xのDockerイメージ。  
+** Postgres
+わしがPostgreSQLをDockerで使いたいときに使うイメージ。
+以下自分用メモ。
 
-* Port
-PostgreSQLのデフォルトポート5432で起動します。Portsも自動で設定されないので
-手動で設定してください。  
+** 設定について
 
-* Volumes  
-自動でvolumeは設定されません。  
+pgconfig以下のファイルがコンテナビルド時に設定される。
+設定ファイルを書き換えたい場合はビルド前にpgconfig以下の設定を変更してからビルドする。
 
-** /var/lib/postgresql
-PGDATAディレクトリが置かれるディレクトリ。データを永続化させるためにvolumeに指定してください。  
+*** /var/log/pg_log
+コンテナ内でログが出力されるディレクトリ。
+ログを永続化するにはvolumeで指定。
+pg_logは自動でパーミッションを書き換えないので、アクセス権に注意。
 
-** /var/log/pg_log
-ログをテキストファイルに書き出す設定になっているので、このディレクトリもvolumeに指定してください。
-pg_logは自動でパーミッションを書き換えないので、アクセス権に注意してください。
-
-* Environemnt
-** POSTGRES_PASSWORD
-postgresユーザー(スーパーユーザー)のパスワード。デフォルト値postgres
-
-* Sample 
-
-docker-compose.ymlを使う場合のサンプル
+*** docker-compose.ymlの例
 
 #+BEGIN_SRC 
 postgres:
@@ -32,8 +23,21 @@ postgres:
   ports:
     - "5432:5432"
   volumes:
-    - /var/log/docker/postgresql:/var/log/pg_log
-    - /var/lib/postgresql:/var/lib/postgresql
+    - "/var/log/docker-postgres:/var/log/pg_log"
+    - "/var/lib/docker-postgres:/var/lib/docker-postgres"
   environment:
-    - POSTGRES_PASSWORD=postgres1
+    - POSTGRES_PASSWORD=postgres
+    - PGDATA=/var/lib/docker-postgres
 #+END_SRC
+
+** Environemnt
+*** POSTGRES_PASSWORD
+DBのpostgresユーザーのパスワード。デフォルト値postgres
+初回起動時にこの値がpostgresユーザーのパスワードとして設定される。
+2回目以後の起動では適応されないので手動で変更が必要。
+
+*** PGDATA
+コンテナ内のpostgresqlのdataディレクトリの場所を指定できる。
+デフォルトは/var/lib/postgresql/data。
+このディレクトリをvolumeで指定してコンテナ外に出せばデータを永続化できる。
+

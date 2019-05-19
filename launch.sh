@@ -29,11 +29,9 @@ if ( `ls -a $PGDATA | wc | awk '{print $1}'` == 2 ) then
     set INIT=1
 endif
 
-
-
 if ($INIT == 1) then
     #su -c "/usr/pgsql/bin/postmaster -D $PGDATA" - postgres &
-    su -c "/usr/pgsql/bin/pg_ctl start -D $PGDATA -w" - postgres && psql -U postgres -w -c "ALTER USER postgres with unencrypted password '$POSTGRES_PASSWORD';"
+    su -c "/usr/pgsql/bin/pg_ctl start -D $PGDATA -w" - postgres && psql -U postgres -w -c "ALTER USER postgres WITH PASSWORD '$POSTGRES_PASSWORD';"
     tail -f /dev/null
 else
     su -c "/usr/pgsql/bin/postmaster -D $PGDATA" - postgres 
